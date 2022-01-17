@@ -23,7 +23,7 @@ import com.dbscommerce.log.domain.repository.ClienteRepository;
 
 import lombok.AllArgsConstructor;
 
-@AllArgsConstructor //gera um construtor com tds as propriedades da classe
+@AllArgsConstructor //gera construtor com tds as propriedades da classe
 @RestController //especifica que é uma classe de controller rest
 @RequestMapping("/clientes")
 public class ClienteController {
@@ -58,7 +58,7 @@ public class ClienteController {
     }
     
     
-    //retorno ResponseEntity p/ poder ter duas resp possíveis na req = 200 ou 404 se o ID nao existir
+    //ResponseEntity p/ poder ter duas resp possíveis na request = 200 ou 404 se o ID nao existir
     @PutMapping("/{clienteId}")
     public ResponseEntity<Cliente> atualizar (@PathVariable Long clienteId,@Valid @RequestBody Cliente cliente){
     	if(!clienteRepository.existsById(clienteId)) {
