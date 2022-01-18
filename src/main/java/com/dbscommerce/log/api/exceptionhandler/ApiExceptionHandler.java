@@ -14,15 +14,21 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import com.dbscommerce.log.domain.exception.NegocioException;
 
 @ControllerAdvice //trata exceções de forma global
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 
+	
 	@Autowired
 	private MessageSource messageSource;
 	
+	
+	//tratando erro de campos com dados inválidos / nulos
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -44,4 +50,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		
 		return handleExceptionInternal(ex, problema, headers, status, request);
 	}
+	
+	
+	
+	//tratando erro de cliente já cadastrado (e-mail duplicado)
+	@ExceptionHandler(NegocioException.class)
+	public ResponseEntity<Object> handleNegocio(NegocioException ex, WebRequest request){
+		
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		
+		Problema problema = new Problema();
+		problema.setStatus(status.value());
+		problema.setDataHora(LocalDateTime.now());
+		problema.setTitulo(ex.getMessage());
+		
+		return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);
+	}
+	
+	
+		
 }
